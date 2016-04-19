@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <sys/time.h>
 
 #define nf 4
@@ -20,13 +21,13 @@ struct Cluster {
 
 struct DataPoint datapoints[nd];
 struct Cluster clusters[k];
-
-char *tokens;
-char *array[nf + 1];
-double features[nf];
-
+double **matrix;
 
 void readDatapoints(char* filename) {
+    char *array[nf + 1];
+    double features[nf];
+    char *tokens;
+
     FILE *file;
     char * line = NULL;
     int lineNumber = 0;
@@ -59,9 +60,58 @@ void readDatapoints(char* filename) {
     }
 }
 
-void cluster() {
+double distance(struct DataPoint dp1, struct DataPoint dp2) {
+    int i;
+    double sum = 0.0;
+    for(i = 0; i < nf; i++){
+        sum += pow(dp1.features[i] - dp2.features[i],2.0);
+    }
+    return sqrt(sum);
+}
+
+void selectInitialMedoids() {
     return 0;
 }
+
+void assignDataPointsToClusters(){
+    return 0;
+}
+
+void updateMedoids() {
+    return 0;
+}
+
+double calculateTotalCost() {
+    return 0.0;
+}
+
+void cluster() {
+    int i,j;
+    double c;
+    double cost = INFINITY;
+    matrix = malloc(nd*sizeof(double *));
+    for(i=0;i<nd;i++){
+        matrix[i] = malloc(nd*sizeof(double));
+        for(j = 0; j < nd; j++){
+            matrix[i][j] = distance(datapoints[i],datapoints[j]);
+        } 
+    }
+
+    selectInitialMedoids();
+    assignDataPointsToClusters();
+    while((c = calculateTotalCost()) < cost){
+        updateMedoids();
+        assignDataPointsToClusters();
+    }
+
+    for(i = 0; i < nd; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+    return 0;
+}
+
+
 
 void saveClustersToFile() {
     return 0;
@@ -75,7 +125,6 @@ void printDatapoints() {
         }
         printf("%s\n", datapoints[i].classification);
     }
-
 }
 
 int main(){  
