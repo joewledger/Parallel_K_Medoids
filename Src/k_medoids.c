@@ -88,6 +88,9 @@ void readDatapoints() {
     }
 }
 
+#ifdef
+    #pragma acc routine seq
+#endif
 double distance(struct DataPoint dp1, struct DataPoint dp2) {
     int i;
     double sum = 0.0;
@@ -236,7 +239,7 @@ double calculateTotalCost() {
 void cluster() {
     int i,j;
     double c;
-    double cost = FLOAT_MAX;
+    double cost = DOUBLE_MAX;
     matrix = malloc(nd*sizeof(double *));
     #ifdef OMP
         #pragma omp parallel for private(j)
