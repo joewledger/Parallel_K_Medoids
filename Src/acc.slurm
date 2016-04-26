@@ -10,7 +10,11 @@ module load pgi
 cp *.c $PFSDIR/.
 cd $PFSDIR
 
-$COMPILE
+$COMPILE_CARS
+./k_medoids.o >> acc_time.txt
+$COMPILE_IRIS
+./k_medoids.o >> acc_time.txt
+$COMPILE_SOYBEAN
 ./k_medoids.o >> acc_time.txt
 
 cp *.txt ~/Parallel_K_Medoids
