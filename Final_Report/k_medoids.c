@@ -236,7 +236,7 @@ double calculateTotalCost() {
 void cluster() {
     int i,j;
     double c;
-    double cost = FLOAT_MAX;
+    double cost = INFINITY;
     matrix = malloc(nd*sizeof(double *));
     #ifdef OMP
         #pragma omp parallel for private(j)

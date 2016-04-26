@@ -1,0 +1,79 @@
+\documentclass{article}
+
+\setlength{\parindent}{0pt}
+
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{listings}
+
+\begin{document}
+
+Joe Ledger \\
+EECS 600 Final Project: Progress Report \\
+Parallelization of the K-Medoids Algorithm \\~\\
+
+\begin{center}
+\textbf{Proposal} \\~\\
+\end{center}
+
+\textbf{Background} \\
+The K-Medoids algorithm is one of the earliest and most influential clustering algorithms developed in the field of data mining. 
+It attempts to partition a dataset of n points into k clusters (where k is a user-supplied parameter).
+Each cluster has a datapoint marked as the \textit{medoid} of the cluster. 
+The algorithm attempts to minimize the sum of pairwise distances between each datapoint and the medoid of the cluster that it is in. 
+There are several versions of the K-medoid algorithm. 
+I will be using the method proposed by Hae-Sang Park and Chi-Hyuck Jun[1] because it seems to be the most easily parallelizable. \\
+
+\textbf{Algorithm} \\
+The Park-Jun method for computing K-medoids is a greedy, iterative algorithm. 
+While it is not guaranteed to find the optimal solution for a given dataset, the algorithm is gaurenteed to converge to a solution. 
+In addition, the algorithm has been shown to converge at near-optimal solutions much faster than the exhaustive algorithm for many datasets. \\~\\
+The algorithm is comprised of the following steps: \\
+1) \textbf{Select initial medoids} as the k datapoints for which $v_j = \Sigma_{i=1}^n \frac{d_{ij}}{\Sigma_{l=1}^n d_{il}}$ is minimized ($d_{xy}$ is the Euclidean distance between datapoints x and y). \\
+1a) Assign each object to the nearest medoid to form the initial clusters. \\
+1b) Calculate the sum of the distances from all objects to their medoids. \\
+2) \textbf{Update medoids} by finding the new medoid of each cluster (the datapoint minimizing the sum of the pairwise distance from itself to all other datapoints in the cluster) \\
+3) \textbf{Assign objects to medoids} by assigning each datapoint to the nearest medoid to form new clusters. \\
+3a) Re-calculate the sum of the distances from all objects to their medoids. If this value is equal to the value calculated in the previous iteration, stop the algorithm. Otherwise, go back to step 2. \\
+
+
+\textbf{Parallelization} \\
+Each of the 3 steps of the algorithm seems parallelizable. 
+In the first step of the algorithm, we can calculate the value $v_j$ for each datapoint $j$ in parallel. 
+In the second step of the algorithm, we can update the medoid of each cluster in parallel. 
+Since there will be exactly k clusters at each iteration, we can use k threads to calculate new medoids (one thread per cluster). 
+In the third step of the algorithm, we can split up all datapoints into $x$ groups (with $x$ being a user-supplied parameter). 
+With x threads (one thread per group), we can assign each datapoint to a new medoid in parallel. \\
+
+\textbf{Sample Code} \\
+I do not plan on using any sample code. I will implement the algorithm from scratch in C (using OpenMP, OpenACC, and MIC compiler directives for parallelization).\\
+
+\textbf{References} \\ 
+$[1]$ Park, H., \& Jun, C. (2009). A simple and fast algorithm for K-medoids clustering. Expert Systems with Applications, 36(2), 3336-3341.
+
+\newpage
+
+\begin{center}
+\textbf{Progress} \\~\\
+\end{center}
+
+\textbf{Results and Implementation Discussion} \\~\\
+So far I have written code to parse arbitrary data from text files and store it into data stuctures in the program's memory. \\~\\
+I have created two structs, DataPoint and Cluster. \\~\\
+DataPoint stores a double array of feature values, as well as a string representing the classification label. \\~\\
+Cluster stores the number of datapoints in the cluster, as well as a pointer to the medoid of the cluster and an array of pointers to datapoints that are in the cluster. \\~\\
+I have not yet fully implemented the clustering algorithm yet. \\~\\
+However, I have fully outlined all methods that need to be implemented in order for the program to successfully run. \\~\\
+I do not anticipate implementing multiple versions of the code to run the OpenMP, OpenACC, and MIC versions of the program. \\~\\
+Instead I will use ifdef compiler directives so that my slurm scripts can decide what version of the program to run without writing any duplicate C code. \\~\\
+
+\textbf{Program Listings} \\~\\
+
+I only anticipate writing one C program, shown below. I will write three slurm scripts to run my C program, one each for OpenMP, OpenACC, and MIC. 
+I plan on using $k$ cores and $k$ threads, where k is a user-supplied parameter deciding the number of clusters to create.\\~\\
+
+\underline{k\_medoids.c} \\~\\
+
+
+\lstinputlisting{k_medoids.c}
+
+\end{document}
