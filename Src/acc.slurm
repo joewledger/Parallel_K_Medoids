@@ -10,3 +10,5 @@ cd $PFSDIR
 
 $COMPILE
 ./k_medoids.o >> acc_time.txt
+
+cp *.txt ~/Parallel_K_Medoids
