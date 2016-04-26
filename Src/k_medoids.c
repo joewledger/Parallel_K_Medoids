@@ -202,7 +202,7 @@ void updateMedoids() {
             #pragma omp parallel for private(j)
         #endif
         #ifdef ACC
-            #pragma acc kernels
+            #pragma acc parallel for
         #endif
         for(i = 0; i < clusterSize; i++){
             distances[i] = 0.0;
@@ -223,7 +223,7 @@ double calculateTotalCost() {
         #pragma omp parallel for private(i)
     #endif
     #ifdef ACC
-        #pragma acc kernels
+        #pragma acc parallel for
     #endif
     for(c = 0;c < k;c++){
         for(i = 0; i < clusters[c].numDatapoints;i++){
@@ -242,7 +242,7 @@ void cluster() {
         #pragma omp parallel for private(j)
     #endif
     #ifdef ACC
-        #pragma acc kernels
+        #pragma acc parallel for
     #endif
     for(i=0;i<nd;i++){
         matrix[i] = malloc(nd*sizeof(double));
