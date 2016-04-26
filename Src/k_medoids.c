@@ -218,7 +218,7 @@ void updateMedoids() {
 
 double calculateTotalCost() {
     int i,c;
-    double totalCost;
+    double totalCost = 0.0;
     #ifdef OMP
         #pragma omp parallel for private(i)
     #endif
